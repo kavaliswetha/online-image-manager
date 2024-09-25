@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Image Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        #imageURL {
+            margin-right: 10px;
+            width: 300px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 6px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .gallery img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery .image-container {
+            position: relative;
+        }
+
+        .gallery .image-container:hover img {
+            transform: scale(1.2); /* Enlarge image on hover */
+        }
+
+        .gallery .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Online Image Manager</h1>
+
+        <div class="upload-section">
+            <!-- Input field for image URL -->
+            <input type="text" id="imageURL" placeholder="Paste image URL here">
+            <button id="addUrlBtn">Add Image from URL</button>
+        </div>
+
+        <!-- Gallery section where images will be displayed -->
+        <div class="gallery" id="gallery"></div>
+    </div>
+
+    <script>
+        // Select necessary DOM elements
+        const imageURLInput = document.getElementById('imageURL');
+        const gallery = document.getElementById('gallery');
+
+        // Handle image URL addition
+        document.getElementById('addUrlBtn').addEventListener('click', () => {
+            const imageUrl = imageURLInput.value;
+
+            // Validate if a valid URL is provided
+            if (imageUrl && isValidUrl(imageUrl)) {
+                const imgElement = document.createElement('div');
+                imgElement.classList.add('image-container');
+                imgElement.innerHTML = `
+                    <img src="${imageUrl}" alt="Image" onerror="handleError(this)">
+                    <button class="delete-btn">X</button>
+                `;
+                gallery.appendChild(imgElement);
+
+                // Handle image deletion
+                imgElement.querySelector('.delete-btn').addEventListener('click', function () {
+                    gallery.removeChild(imgElement);
+                });
+
+                // Clear the input field after adding the image
+                imageURLInput.value = '';
+            } else {
+                alert("Please enter a valid image URL.");
+            }
+        });
+
+        // Validate if the input is a valid URL
+        function isValidUrl(urlString) {
+            try {
+                new URL(urlString);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // Handle invalid image loading
+        function handleError(imageElement) {
+            alert("Invalid image URL. Image could not be loaded.");
+            imageElement.parentElement.remove();
+        }
+    </script>
+</body>
+</html>
